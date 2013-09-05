@@ -213,12 +213,26 @@ function bean_form($form, &$form_state, Bean $bean, $type = NULL) {
     '#weight' => -10,
   );
 
+  if (user_access('edit bean machine name')) {
+    $form['delta'] = array(
+      '#type' => 'machine_name',
+      '#default_value' => isset($bean->delta) ? $bean->delta : '',
+      '#maxlength' => 32,
+      '#machine_name' => array(
+        'exists' => 'bean_delta_exists',
+        'source' => array('label'),
+      ),
+      '#description' => t('A unique machine-readable name for this block type. It must only contain lowercase letters, numbers, and underscores.'),
+      '#weight' => -9,
+    );
+  }
+
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#description' => t('The Title of the block.'),
     '#default_value' => $bean->title,
-    '#weight' => -9,
+    '#weight' => -8,
   );
 
   $form['revision'] = array(

@@ -535,6 +535,18 @@ function bean_load_delta($delta, $reset = FALSE, $revision = NULL) {
 }
 
 /**
+ * Check bean block delta's existence.
+ *
+ * @param $delta
+ *   String specifying the bean delta.
+ *
+ * @return bool
+ */
+function bean_delta_exists($delta) {
+  return bean_load_delta($delta) !== FALSE;
+}
+
+/**
  * Menu callback to load a bean by the delta
  */
 function bean_delta_load($delta, $revision = NULL) {
@@ -587,6 +599,10 @@ function bean_permission() {
     'edit bean view mode' => array(
       'title' => t('Change the View Mode of the Bean'),
       'description' => t('Ability to change the view mode on the bean form'),
+    ),
+    'edit bean machine name' => array(
+      'title'       => t('Change the machine name of a Bean'),
+      'description' => t('Ability to change the machine name on the bean form'),
     ),
     'view bean page' => array(
       'title' => t('View Bean page'),
@@ -1006,7 +1022,7 @@ function bean_field_extra_fields() {
       'label' => t('View mode'),
       'description' => t('Bean module element'),
       'weight' => 10,
-     );
+    );
   }
   return $extra;
 }
@@ -1050,9 +1066,9 @@ function bean_admin_menu_output_build(&$content) {
     }
   }
   $tree = menu_build_tree($link['menu_name'], array(
-    'conditions' => $conditions,
-    'min_depth' => $link['depth'],
-  ));
+                                                   'conditions' => $conditions,
+                                                   'min_depth' => $link['depth'],
+                                              ));
   $links = admin_menu_links_menu($tree);
   if (!empty($links)) {
     // If the user has access to the top-level "Content" category, insert the

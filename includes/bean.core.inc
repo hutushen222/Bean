@@ -383,16 +383,18 @@ class Bean extends Entity {
       $max_length = 32;
 
       // Base it on the label and make sure it isn't too long for the database.
-      if (module_exists('transliteration')) {
-        $delta = drupal_clean_css_identifier(transliteration_get($this->label));
-      }
-      else {
-        $delta = drupal_clean_css_identifier(strtolower($this->label));;
+      $delta = $this->label;
+      $delta = preg_replace('/[^a-z0-9_]/', '', strtolower($delta));
+      $delta = preg_replace('/_+/', '_', $delta);
+
+      // Generate a random delta when delta is empty.`
+      if (empty($delta)) {
+        $delta = uniqid('bean_');
       }
 
-      // Add 'bean-' prefix when it's need to avoid a purely numeric delta.
+      // Add 'bean_' prefix when it's need to avoid a purely numeric delta.
       if (is_numeric($delta)) {
-        $delta = 'bean-' . $delta;
+        $delta = 'bean_' . $delta;
       }
 
       $this->delta = substr($delta, 0, $max_length);
@@ -400,7 +402,7 @@ class Bean extends Entity {
       // Check if delta is unique.
       if (bean_load_delta($this->delta)) {
         $i = 0;
-        $separator = '-';
+        $separator = '_';
         $original_delta = $this->delta;
         do {
           $unique_suffix = $separator . $i++;
